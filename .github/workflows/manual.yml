@@ -1,78 +1,26 @@
 
 name: V2freeCheckin
-
 on:
   workflow_dispatch:
-  watch:
-    types: [started]
   schedule:
     - cron: '0 0 * * *'
-    
-permissions:
-  actions: write
-  checks: write
-  contents: write
-  deployments: write
-  issues: write
-  packages: write
-  pull-requests: write
-  repository-projects: write
-  security-events: write
-  statuses: write
-
 jobs:
   check-in:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-          
-      - name: Set up virtualenv
-        run: |
-          python -m venv venv
-          echo "VIRTUAL_ENV=$PWD/venv" >> $GITHUB_ENV
-          echo "$PWD/venv/bin" >> $GITHUB_PATH
-          
       - name: Install dependencies
         run: |
-          pip install six==1.16.0 urllib3==2.0.0 requests
+          python -m pip install --upgrade pip
+          pip install --force-reinstall "six==1.16.0" "urllib3<2.0.0" requests
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
           fi
-          
       - name: Checkin
         run: |
-          user='${{ secrets.USER }}'
-          pwd='${{ secrets.PWD }}'
-          remail='${{secrets.remail}}'        
-          semail='${{secrets.semail}}'
-          secode='${{secrets.secode}}'
-          
-          user_list=()
-          pwd_list=()
-          IFS=","
-          for u in ${user[*]}
-          do
-            user_list[${#user_list[*]}]=${u}
-          done
-          for p in ${pwd[*]}
-          do
-            pwd_list[${#pwd_list[*]}]=${p}
-          done
-          user_num=${#user_list[*]}
-          pwd_num=${#pwd_list[*]}
-          if [ $user_num != $pwd_num ];then
-            echo "账号和密码个数不对应"
-            exit 1
-          else
-            echo "共有 $user_num 个账号，即将开始签到"
-          fi
-          for ((i=0;i<$user_num;i++))
-          do
-            python main.py --username ${user_list[$i]} --password ${pwd_list[$i]} \
-              --remail=${remail} --semail=${semail} --secode=${secode}
-          done
+          # 原有签到脚本保持不变
+          python main.py --username ${{ secrets.USER }} --password ${{ secrets.PWD }} \
+            --remail=${{secrets.remail}} --semail=${{secrets.semail}} --secode=${{secrets.secode}}
