@@ -30,6 +30,12 @@ jobs:
       run: |
         sudo apt update && \
         sudo apt install python3
+
+    - name: Fix dependencies
+      run: |
+       python -m pip install --upgrade pip
+       pip uninstall urllib3 requests six -y
+       pip install --force-reinstall six==1.16.0 urllib3==2.0.0 requests
       
     - name: requirements
       run: |
