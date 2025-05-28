@@ -28,10 +28,6 @@ def main(usr, pw):
     }
     response = client.post(sign_url, headers=headers)
     msg = usr + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    msg += ' 邮箱'
-    msg += usr
-    msg += ' 密码'
-    msg += pw
     if response.status_code == 200:
         msg += '签到成功'
     else:msg += '签到失败'
