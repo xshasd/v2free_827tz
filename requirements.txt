@@ -1,2 +1,4 @@
-requests==2.20.0
+requests2.28.2
+urllib31.26.0
+six==1.16.0
 crontab~=0.22.9
